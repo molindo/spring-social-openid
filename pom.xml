@@ -19,18 +19,20 @@
 		<repository>
 			<id>spring-release</id>
 			<url>http://maven.springframework.org/release</url>
-			<snapshots>false</snapshots>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
 		</repository>
 		<repository>
 			<id>spring-milestone</id>
 			<url>http://maven.springframework.org/milestone</url>
-			<snapshots>false</snapshots>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
 		</repository>
 		<repository>
 			<id>spring-snapshot</id>
 			<url>http://maven.springframework.org/snapshot</url>
-			<releases>false</releases>
-			<snapshots>true</snapshots>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
 		</repository>
 	</repositories>
 
