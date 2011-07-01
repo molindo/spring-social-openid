@@ -17,20 +17,8 @@
 
 	<repositories>
 		<repository>
-			<id>spring-release</id>
-			<url>http://maven.springframework.org/release</url>
-			<releases><enabled>true</enabled></releases>
-			<snapshots><enabled>false</enabled></snapshots>
-		</repository>
-		<repository>
 			<id>spring-milestone</id>
 			<url>http://maven.springframework.org/milestone</url>
-			<releases><enabled>true</enabled></releases>
-			<snapshots><enabled>false</enabled></snapshots>
-		</repository>
-		<repository>
-			<id>spring-snapshot</id>
-			<url>http://maven.springframework.org/snapshot</url>
 			<releases><enabled>true</enabled></releases>
 			<snapshots><enabled>false</enabled></snapshots>
 		</repository>

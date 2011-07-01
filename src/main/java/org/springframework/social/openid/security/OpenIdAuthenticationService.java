@@ -51,7 +51,7 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 
 	private OpenIDConsumer consumer;
 	private String claimedIdentityFieldName = DEFAULT_CLAIMED_IDENTITY_FIELD;
-	private Map<String, String> realmMapping = Collections.emptyMap();
+	private IRealmMapper realmMapper = null;
 	private Set<String> returnToUrlParameters = Collections.emptySet();
 
 	public OpenIdAuthenticationService() {
@@ -136,7 +136,13 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	}
 
 	protected String lookupRealm(String returnToUrl) {
-		String mapping = realmMapping.get(returnToUrl);
+		String mapping = null;
+		
+		IRealmMapper realmMapper = getRealmMapper();
+		if (realmMapper != null) {
+			mapping = realmMapper.getMapping(returnToUrl);
+		}
+		
 
 		if (mapping == null) {
 			try {
@@ -210,22 +216,6 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	}
 
 	/**
-	 * Maps the <tt>return_to url</tt> to a realm, for example: <pre>
-	 * http://www.example.com/j_spring_openid_security_check ->
-	 * http://www.example.com/realm</tt> </pre> If no mapping is provided then
-	 * the returnToUrl will be parsed to extract the protocol, hostname and port
-	 * followed by a trailing slash. This means that
-	 * <tt>http://www.example.com/j_spring_openid_security_check</tt> will
-	 * automatically become <tt>http://www.example.com:80/</tt>
-	 * 
-	 * @param realmMapping
-	 *            containing returnToUrl -> realm mappings
-	 */
-	public void setRealmMapping(Map<String, String> realmMapping) {
-		this.realmMapping = realmMapping;
-	}
-
-	/**
 	 * The name of the request parameter containing the OpenID identity, as
 	 * submitted from the initial login form.
 	 * 
@@ -238,6 +228,14 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 
 	public void setConsumer(OpenIDConsumer consumer) {
 		this.consumer = consumer;
+	}
+
+	public IRealmMapper getRealmMapper() {
+		return realmMapper;
+	}
+
+	public void setRealmMapper(IRealmMapper realmMapper) {
+		this.realmMapper = realmMapper;
 	}
 
 	/**
