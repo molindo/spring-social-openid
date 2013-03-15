@@ -55,16 +55,12 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	private Set<String> returnToUrlParameters = Collections.emptySet();
 
 	public OpenIdAuthenticationService() {
-		super(AuthenticationMode.EXPLICIT);
+		super();
 	}
 
 	public OpenIdAuthenticationService(OpenIdConnectionFactory connectionFactory) {
 		this();
 		setConnectionFactory(connectionFactory);
-	}
-
-	public OpenIdAuthenticationService(AuthenticationMode authenticationMode) {
-		super(authenticationMode);
 	}
 
 	@Override
@@ -89,11 +85,8 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	}
 
 	@Override
-	public SocialAuthenticationToken getAuthToken(AuthenticationMode authMode, HttpServletRequest request,
+	public SocialAuthenticationToken getAuthToken(HttpServletRequest request,
 			HttpServletResponse response) throws SocialAuthenticationRedirectException {
-		if (authMode != getAuthenticationMode()) {
-			return null;
-		}
 
 		String identity = request.getParameter("openid.identity");
 
@@ -125,7 +118,8 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 			String verifiedId = (String) token.getPrincipal();
 			ConnectionData data = new ConnectionData(connectionFactory.getProviderId(), verifiedId, null, null, null,
 					null, null, null, null);
-			return new SocialAuthenticationToken(data, obtainAccountData(token));
+
+			return new SocialAuthenticationToken(connectionFactory.createConnection(data), obtainAccountData(token));
 		} catch (OpenIDConsumerException oice) {
 			throw new AuthenticationServiceException("Consumer error", oice);
 		}
@@ -137,12 +131,12 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 
 	protected String lookupRealm(String returnToUrl) {
 		String mapping = null;
-		
+
 		IRealmMapper realmMapper = getRealmMapper();
 		if (realmMapper != null) {
 			mapping = realmMapper.getMapping(returnToUrl);
 		}
-		
+
 
 		if (mapping == null) {
 			try {
@@ -167,7 +161,7 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	/**
 	 * Builds the <tt>return_to</tt> URL that will be sent to the OpenID service
 	 * provider. By default returns the URL of the current request.
-	 * 
+	 *
 	 * @param request
 	 *            the current request which is being processed by this filter
 	 * @return The <tt>return_to</tt> URL.
@@ -218,7 +212,7 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	/**
 	 * The name of the request parameter containing the OpenID identity, as
 	 * submitted from the initial login form.
-	 * 
+	 *
 	 * @param claimedIdentityFieldName
 	 *            defaults to "openid_identifier"
 	 */
@@ -242,7 +236,7 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 	 * Specifies any extra parameters submitted along with the identity field
 	 * which should be appended to the {@code return_to} URL which is assembled
 	 * by {@link #buildReturnToUrl}.
-	 * 
+	 *
 	 * @param returnToUrlParameters
 	 *            the set of parameter names. If not set, it will default to the
 	 *            parameter name used by the {@code RememberMeServices} obtained
@@ -252,4 +246,5 @@ public class OpenIdAuthenticationService extends AbstractSocialAuthenticationSer
 		Assert.notNull(returnToUrlParameters, "returnToUrlParameters cannot be null");
 		this.returnToUrlParameters = returnToUrlParameters;
 	}
+
 }
