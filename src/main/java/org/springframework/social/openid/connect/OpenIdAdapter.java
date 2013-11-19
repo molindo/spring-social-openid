@@ -31,16 +31,15 @@ public class OpenIdAdapter implements ApiAdapter<OpenId> {
 
 	@Override
 	public void setConnectionValues(OpenId api, ConnectionValues values) {
-		// TODO Auto-generated method stub
+		values.setProviderUserId(api.getVerifiedOpenId());
 	}
 
 	@Override
 	public UserProfile fetchUserProfile(OpenId api) {
-		
-		
-		return new UserProfileBuilder().setUsername(null).build();
+		return new UserProfileBuilder().setUsername(api.getVerifiedOpenId()).build();
 	}
 
+	
 	@Override
 	public void updateStatus(OpenId api, String message) {
 	}
