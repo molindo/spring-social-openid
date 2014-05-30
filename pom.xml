@@ -9,7 +9,7 @@
 
 	<groupId>at.molindo.social</groupId>
 	<artifactId>spring-social-openid</artifactId>
-	<version>1.1.0.RELEASE</version>
+	<version>1.1.1.BUILD-SNAPSHOT</version>
 	<name>OpenID authentication for spring-social</name>
 	<description>
 	</description>
