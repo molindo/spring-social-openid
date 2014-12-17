@@ -23,22 +23,27 @@ import org.springframework.social.openid.api.OpenId;
 
 public class OpenIdConnection extends AbstractConnection<OpenId> {
 
+	private static final long serialVersionUID = 1L;
+
 	private final OpenIdServiceProvider serviceProvider;
-	private final OpenId api;
+	private final String verifiedOpenId;
+	private transient OpenId api;
 
 	public OpenIdConnection(String verifiedOpenId, OpenIdServiceProvider serviceProvider, ApiAdapter<OpenId> apiAdapter) {
 		super(apiAdapter);
 		this.serviceProvider = serviceProvider;
-		this.api = initApi(verifiedOpenId);
+		this.verifiedOpenId = verifiedOpenId;
+		this.api = initApi();
 	}
 
 	public OpenIdConnection(ConnectionData data, OpenIdServiceProvider serviceProvider, ApiAdapter<OpenId> apiAdapter) {
 		super(data, apiAdapter);
 		this.serviceProvider = serviceProvider;
-		this.api = initApi(data.getProviderUserId());
+		this.verifiedOpenId = data.getProviderUserId();
+		this.api = initApi();
 	}
 
-	private OpenId initApi(String verifiedOpenId) {
+	private OpenId initApi() {
 		return serviceProvider.getApi(verifiedOpenId);
 	}
 	
@@ -54,6 +59,11 @@ public class OpenIdConnection extends AbstractConnection<OpenId> {
 		synchronized (getMonitor()) {
 			return new ConnectionData(getKey().getProviderId(), getKey().getProviderUserId(), getDisplayName(), getProfileUrl(), getImageUrl(), null, null, null, null);
 		}
+	}
+
+	@Override
+	public void refresh() {
+		api = initApi();
 	}
 
 }
